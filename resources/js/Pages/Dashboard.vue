@@ -326,24 +326,24 @@ const handlePageChange = (page) => {
                         <label> نوع الملاحظه</label>
 
                         <select v-model="newItemForm.note_id" class="form-control " placeholder="  نوع الملاحظه...">
-                            <option v-for="item in notes " :value="item.id">{{ item.name }}</option>
+                            <option v-for="item in notes" :value="item.id">{{ item.name }}</option>
                         </select>
                         <label class="text-danger" v-if="errors.note_id">{{ errors.note_id
-                            }}</label>
+                        }}</label>
                     </div>
                     <div class="col-6 column py-2">
                         <label>رقم الملف الجزئي</label>
                         <input v-model="newItemForm.partial_case_number" class="form-control "
                             placeholder="رقم الملف الجزئي..." />
                         <label class="text-danger" v-if="errors.partial_case_number">{{ errors.partial_case_number
-                            }}</label>
+                        }}</label>
                     </div>
                     <div class="col-6 column py-2">
                         <label>رقم الملف الجنائي</label>
                         <input v-model="newItemForm.criminal_case_number" class="form-control "
                             placeholder="رقم القضية..." />
                         <label class="text-danger" v-if="errors.criminal_case_number">{{ errors.criminal_case_number
-                            }}</label>
+                        }}</label>
                     </div>
                     <div class="col-6 column py-2">
                         <label>الإسم</label>
@@ -387,7 +387,7 @@ const handlePageChange = (page) => {
                         <input v-model="newItemForm.judgment_operative" class="form-control "
                             placeholder="منطوق الحكم..." />
                         <label class="text-danger" v-if="errors.judgment_operative">{{ errors.judgment_operative
-                            }}</label>
+                        }}</label>
                     </div>
 
 
@@ -395,7 +395,7 @@ const handlePageChange = (page) => {
                         <label> ملاحظات</label>
                         <input v-model="newItemForm.note" class="form-control " placeholder=" ملاحظات..." />
                         <label class="text-danger" v-if="errors.note">{{ errors.note
-                            }}</label>
+                        }}</label>
                     </div>
                 </div>
                 <template #footer>
@@ -414,13 +414,13 @@ const handlePageChange = (page) => {
                             <option v-for="item in notes" :value="item.id">{{ item.name }}</option>
                         </select>
                         <label class="text-danger" v-if="errors.note_id">{{ errors.note_id
-                            }}</label>
+                        }}</label>
                     </div>
                     <div class="col-6 column py-2">
                         <label>رقم الملف الجزئي</label>
                         <input v-model="editItemForm.partial_case_number" class="form-control " />
                         <label class="text-danger" v-if="errors.partial_case_number">{{ errors.partial_case_number
-                            }}</label>
+                        }}</label>
                     </div>
 
 
@@ -428,7 +428,7 @@ const handlePageChange = (page) => {
                         <label>رقم الملف الجنائي</label>
                         <input v-model="editItemForm.criminal_case_number" class="form-control " />
                         <label class="text-danger" v-if="errors.criminal_case_number">{{ errors.criminal_case_number
-                            }}</label>
+                        }}</label>
                     </div>
                     <div class="col-6 column py-2">
                         <label>الإسم</label>
@@ -469,13 +469,13 @@ const handlePageChange = (page) => {
                         <label>منطوق الحكم</label>
                         <input v-model="editItemForm.judgment_operative" class="form-control " />
                         <label class="text-danger" v-if="errors.judgment_operative">{{ errors.judgment_operative
-                            }}</label>
+                        }}</label>
                     </div>
                     <div class="col-12 column py-2">
                         <label> ملاحظلات</label>
                         <input v-model="editItemForm.note" class="form-control " />
                         <label class="text-danger" v-if="errors.note">{{ errors.note
-                            }}</label>
+                        }}</label>
                     </div>
 
 
@@ -507,13 +507,13 @@ const handlePageChange = (page) => {
                         <label>رقم الملف الجزئي</label>
                         <input disabled v-model="ShownDate.partial_case_number" class="form-control " />
                         <label class="text-danger" v-if="errors.partial_case_number">{{ errors.partial_case_number
-                            }}</label>
+                        }}</label>
                     </div>
                     <div class="col-6 column py-2">
                         <label>رقم الملف الجنائي</label>
                         <input disabled v-model="ShownDate.criminal_case_number" class="form-control " />
                         <label class="text-danger" v-if="errors.criminal_case_number">{{ errors.criminal_case_number
-                            }}</label>
+                        }}</label>
                     </div>
                     <div class="col-6 column py-2">
                         <label>الإسم</label>
@@ -554,13 +554,13 @@ const handlePageChange = (page) => {
                         <label>منطوق الحكم</label>
                         <input disabled v-model="ShownDate.judgment_operative" class="form-control " />
                         <label class="text-danger" v-if="errors.judgment_operative">{{ errors.judgment_operative
-                            }}</label>
+                        }}</label>
                     </div>
                     <div class="col-6 column py-2">
                         <label>طريقة الإدخال</label>
                         <input disabled v-model="ShownDate.inserted_way" class="form-control " />
                         <label class="text-danger" v-if="errors.inserted_way">{{ errors.inserted_way
-                            }}</label>
+                        }}</label>
                     </div>
 
                     <div class="col-6 column py-2">
@@ -572,7 +572,7 @@ const handlePageChange = (page) => {
                         <label> ملاحظات</label>
                         <input disabled v-model="ShownDate.note" class="form-control " />
                         <label class="text-danger" v-if="errors.note">{{ errors.note
-                            }}</label>
+                        }}</label>
                     </div>
                 </div>
                 <template #footer>
@@ -582,7 +582,7 @@ const handlePageChange = (page) => {
                     </div>
                 </template>
             </el-dialog>
-            <div class="max-w-7xl mx-auto bg-white shadow-sm rounded-lg p-6">
+            <div class="max-w-8xl  bg-darksilver mx-auto bg-white shadow-sm rounded-lg p-6">
                 <button @click="searchFormVisable = true" v-if="!searchFormVisable" class="btn bnt-sm btn-info">
                     فتح نمودج البحث
                 </button><button @click="searchFormVisable = false" v-if="searchFormVisable"

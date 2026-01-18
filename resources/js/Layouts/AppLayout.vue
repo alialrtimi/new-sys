@@ -7,6 +7,8 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
 // import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 defineProps({
     title: String,
@@ -55,9 +57,15 @@ const logout = () => {
         <Banner />
 
         <div class="min-h-screen bg-gray-100">
-            <nav class="bg-white border-b border-gray-100" style="position: fixed; width: 100%;">
+            <nav class="bg-white border-b border-gray-100" style="position: fixed; z-index: 1; width: 100%; border: none ;box-shadow: -34px 19px 34px -15px #000000;
+  -webkit-box-shadow: -34px 19px 34px -15px #000000;
+  -moz-box-shadow: -34px 19px 34px -15px #000000;
+">
+
                 <!-- Primary Navigation Menu -->
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style="direction: rtl;">
+                <div class="max-w-12xl mx-auto px-4 sm:px-6 lg:px-12 bg-darksilver"
+                    style="direction: rtl; height: 69px;">
+
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
@@ -70,26 +78,24 @@ const logout = () => {
                             </div> -->
 
                             <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    <!-- <ApplicationMark class="block h-9 w-auto"
-                                        style="width: 60px !important; height: 60px !important;" /> -->
-                                    الرئيسية
-                                </NavLink>
-                            </div>
-                        </div>
-                        <h1 class="d-flex align-self-center font-weight-bold" style="font-weight:bold;">
-                             منظومة استعلام المشتكين ( مديرية أمن بني وليد )
+                            <button class="btn bnt-sm" @click="toggleSidebar()">
+                                <FontAwesomeIcon icon="bars" class="text-blue-600" />
 
-                        </h1>
-                        <div class="hidden sm:flex sm:items-center sm:ms-6">
+
+                            </button>
+
+                        </div>
+                        <h1 class="d-flex align-self-center font-weight-bold col-10 px-5" style="font-size: 1.5rem;">
+                            منظومة طلبات الحالة الجنائية </h1>
+                        <div class="hidden sm:flex sm:items-center sm:ms-6 m-0">
                             <div class="ms-3 relative">
                                 <!-- Teams Dropdown -->
                                 <Dropdown v-if="$page.props.jetstream.hasTeamFeatures" align="right" width="60">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button type="button"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
+                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150 "
+                                                style="background-color: #191c24 !important; color: white !important;">
                                                 {{ $page.props.auth.user.current_team.name }}
 
                                                 <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
@@ -166,10 +172,11 @@ const logout = () => {
 
                                         <span v-else class="inline-flex rounded-md">
                                             <button type="button"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
+                                                class="btn btn-outline-primary mt-3  d-flex align-items-center justify-content-center text-white"
+                                                style="width: 6rem; height: 3rem; font-size: 0.8rem; ">
                                                 {{ $page.props.auth.user.name }}
 
-                                                <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                                <svg class=" ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                                     fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                                     stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -181,7 +188,7 @@ const logout = () => {
 
                                     <template #content>
                                         <!-- Account Management -->
-                                        <div class="block px-4 py-2 text-xs text-gray-400">
+                                        <div class="block px-4 py-2 text-xs text-gray-400" style="left: 10px;">
                                             ــــــــ
                                         </div>
 
@@ -329,96 +336,45 @@ const logout = () => {
             </header>
 
             <!-- Page Content -->
-            <div class="col-12 row ">
+            <div class="col-12 row " style="background-color: #000000;">
 
                 <main class="col-10 " id="content-dev">
-                    <button class="btn bnt-sm btn-primary" @click="toggleSidebar()">
-                        -
 
-                    </button>
                     <slot />
                 </main>
                 <div id="sidebar-dev" class="col-2  bg-primary p-0 h-100 " style="position: fixed;
-  right: 0px; box-shadow: -2px 18px 13px -5px;">
-                    <div class="d-flex flex-column flex-shrink-0 p-3 bg-light h-100">
-                        <!-- <a href="/"
-                            class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-                            <svg class="bi me-2" width="40" height="32">
-                                <use xlink:href="#bootstrap"></use>
-                            </svg>
-                        </a> -->
-                        <ul class="nav nav-pills justify-content-center  mb-2">
+  right: 0px;">
+                    <div class="d-flex flex-column flex-shrink-0 p-3 pt-4 bg-light h-100 bg-darksilver">
+
+                        <ul class=" col-12 d-flex flex-row align-items-center justify-content-between">
+                            <FontAwesomeIcon icon="ellipsis-vertical" class="text-danger p-0 m-0" />
+
+                            <label style="font-size: 0.9rem ;">نظام الحالة الجنائية
+
+
+                            </label>
                             <li class="nav-item">
-                                <ApplicationMark class="block h-9 w-auto"
-                                    style="width: 90px !important; height: 90px !important;" />
+                                <ApplicationMark class="" style="width: 35px !important; height: 35px !important;" />
                             </li>
+
                         </ul>
 
-                        <hr class="mb-4">
                         <ul class="nav nav-pills flex-column mb-auto">
 
+
+
                             <li class="nav-item">
-                                <Link :href="route('dashboard')"
-                                    :class="$inertia.page.component == 'Dashboard' ? 'nav-link active' : 'nav-link '"
-                                    aria-current="page">
-                                <svg class="bi me-2" width="16" height="16">
-                                    <use xlink:href="#home"></use>
-                                </svg>
-
-                                الملفات
-                                </Link>
-                            </li>
-                            <li class="nav-item" v-if="$inertia.page.props.auth.user.type != 'user'">
-                                <Link :href="route('deleted-files')"
-                                    :class="$inertia.page.component == 'DeletedFiles' ? 'nav-link active' : 'nav-link '"
-                                    aria-current="page">
-                                <svg class="bi me-2" width="16" height="16">
-                                    <use xlink:href="#home"></use>
-                                </svg>
-
-                                الملفات المحدوفة
-                                <!-- <FontAwesomeIcon :icon="['fas', 'user']" /> -->
-
-                                </Link>
-                            </li>
-
-                            <li class="nav-item" v-if="$inertia.page.props.auth.user.type == 'super_admin'">
-                                <Link :href="route('search-log')"
-                                    :class="$inertia.page.component == 'SearchLog' ? 'nav-link active' : 'nav-link '"
-                                    aria-current="page">
-                                <svg class="bi me-2" width="16" height="16">
-                                    <use xlink:href="#home"></use>
-                                </svg>
-
-                                سجل البحث
-                                <!-- <FontAwesomeIcon :icon="['fas', 'user']" /> -->
-
-                                </Link>
-                            </li>
-                            <li class="nav-item" v-if="$inertia.page.props.auth.user.type == 'super_admin'">
                                 <Link :href="route('users-index')"
                                     :class="$inertia.page.component == 'Users' ? 'nav-link active' : 'nav-link '"
                                     aria-current="page">
-                                <svg class="bi me-2" width="16" height="16">
-                                    <use xlink:href="#home"></use>
-                                </svg>
+                                    <svg class="bi me-2" width="16" height="16">
+                                        <use xlink:href="#home"></use>
+                                    </svg>
 
-                                إدارة المستخدمين
+                                    إدارة المستخدمين
                                 </Link>
                             </li>
 
-
-                            <li class="nav-item" v-if="$inertia.page.props.auth.user.type == 'super_admin'">
-                                <Link :href="route('notes.index')"
-                                    :class="$inertia.page.component == 'Notes' ? 'nav-link active' : 'nav-link '"
-                                    aria-current="page">
-                                <svg class="bi me-2" width="16" height="16">
-                                    <use xlink:href="#home"></use>
-                                </svg>
-
-                                ادارة الملاحظات
-                                </Link>
-                            </li>
                         </ul>
                         <hr>
 
@@ -442,5 +398,84 @@ const logout = () => {
 #nprogress .spinner {
     top: 50% !important;
     right: 50% !important;
+}
+
+.bg-darksilver {
+    background-color: #191c24 !important;
+}
+
+* {
+    color: white;
+}
+
+.el-card__body {
+    background-color: #191c24 !important;
+    border: unset !important;
+}
+
+.el-card {
+    border-color: unset;
+    border-radius: 10px;
+    border: unset;
+}
+
+.el-table__empty-block {
+    background-color: #000000;
+}
+
+th {
+    background-color: #191c24 !important;
+    border-color: unset !important;
+    border: unset !important;
+}
+
+.el-table__inner-wrapper::before {
+    height: unset;
+}
+
+.el-table--border::after {
+    top: unset;
+}
+
+/* .el-table--border::before {
+    width: unset !important;
+} */
+.el-table {
+    --el-table-border-color: unset;
+}
+
+.min-h-screen {
+    background-color: black;
+}
+
+.el-table__inner-wrapper {
+    z-index: 0;
+}
+
+.el-pager li {
+    background-color: #000000;
+    color: white !important;
+}
+
+.btn-next .el-icon svg path {
+    color: #000000 !important;
+}
+
+.btn-prev .el-icon svg path {
+    color: #000000 !important;
+}
+
+.nav-link.active {
+    background: #0f1015 !important;
+    color: white;
+}
+
+.nav-link {
+
+    color: white;
+}
+
+.nav-item {
+    color: #d9d9d9 !important;
 }
 </style>

@@ -308,13 +308,13 @@ function addUser() {
                         <label> الإسم</label>
                         <input v-model="newItemForm.name" class="form-control " placeholder="الإسم" />
                         <label class="text-danger" v-if="errors.name">{{ errors.name
-                            }}</label>
+                        }}</label>
                     </div>
                     <div class="col-6 column py-2">
                         <label> البريد الإلكتروني</label>
                         <input v-model="newItemForm.email" class="form-control " placeholder="البريد الإلكتروني ..." />
                         <label class="text-danger" v-if="errors.email">{{ errors.email
-                            }}</label>
+                        }}</label>
                     </div>
                     <div class="col-6 column py-2">
                         <label>كلمة المرور</label>
@@ -326,7 +326,7 @@ function addUser() {
                         <input v-model="newItemForm.password_confirmation" class="form-control "
                             placeholder=" تأكيد كلمة المرور..." />
                         <label class="text-danger" v-if="errors.password_confirmation">{{ errors.password_confirmation
-                            }}</label>
+                        }}</label>
                     </div>
 
 
@@ -339,7 +339,7 @@ function addUser() {
                         </select>
 
                         <label class="text-danger" v-if="errors.type">{{ errors.type
-                            }}</label>
+                        }}</label>
                     </div>
 
 
@@ -366,13 +366,13 @@ function addUser() {
                         <label>كلمة المرور </label>
                         <input v-model="changePasswordForm.password" class="form-control " />
                         <label class="text-danger" v-if="errors.password">{{ errors.password
-                            }}</label>
+                        }}</label>
                     </div>
                     <div class="col-6 column py-2">
                         <label> تأكيد كلمة المرور</label>
                         <input v-model="changePasswordForm.password_confirmation" class="form-control " />
                         <label class="text-danger" v-if="errors.password_confirmation">{{ errors.password_confirmation
-                            }}</label>
+                        }}</label>
                     </div>
 
 
@@ -396,13 +396,13 @@ function addUser() {
                         <label>اسم المستخدم </label>
                         <input disabled v-model="ShownDate.name" class="form-control " />
                         <label class="text-danger" v-if="errors.name">{{ errors.name
-                            }}</label>
+                        }}</label>
                     </div>
                     <div class="col-6 column py-2">
                         <label> البريد الإلكتروني</label>
                         <input disabled v-model="ShownDate.email" class="form-control " />
                         <label class="text-danger" v-if="errors.email">{{ errors.email
-                            }}</label>
+                        }}</label>
                     </div>
                     <div class="col-6 column py-2">
                         <label>تاريخ التسجيل </label>
@@ -438,7 +438,7 @@ function addUser() {
                     </div>
                 </template>
             </el-dialog>
-            <div class="max-w-7xl mx-auto bg-white shadow-sm rounded-lg p-6">
+            <div class="max-w-7xl  mx-auto bg-white shadow-sm rounded-lg p-6">
 
 
 

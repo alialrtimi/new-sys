@@ -7,9 +7,13 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
-
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 // import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+// أمثلة على ايقونات
+import { faUser, faHome, faEdit, faTrash,faBars,faEllipsisVertical   } from '@fortawesome/free-solid-svg-icons'
 
+library.add(faUser, faHome, faEdit, faTrash,faBars,faEllipsisVertical  )
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -19,7 +23,7 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(ElementPlus)
-            // .component('font-awesome-icon', FontAwesomeIcon)
+            .component('font-awesome-icon', FontAwesomeIcon)
             
             .mount(el);
     },
