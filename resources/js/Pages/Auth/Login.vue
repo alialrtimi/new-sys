@@ -45,7 +45,7 @@ const submit = () => {
         <form @submit.prevent="submit">
             <div>
                 <InputLabel for="البريد الاكتروني" value="البريد الاكتروني" />
-                <TextInput id="email" v-model="form.email" type="email" class="mt-1 block w-full" required autofocus
+                <TextInput id="email" v-model="form.email" type="text" class="mt-1 block w-full" required autofocus
                     autocomplete="username" />
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
@@ -67,7 +67,7 @@ const submit = () => {
             <div class="flex items-center justify-end mt-4">
                 <Link v-if="canResetPassword" :href="route('password.request')"
                     class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                هل نسيت كلمة المرور
+                    هل نسيت كلمة المرور
                 </Link>
 
                 <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">

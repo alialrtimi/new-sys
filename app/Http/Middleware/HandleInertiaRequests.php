@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Department;
+use App\Models\internalState;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -33,10 +35,29 @@ class HandleInertiaRequests extends Middleware
      *
      * @return array<string, mixed>
      */
+    // public function share(Request $request): array
+    // {
+    //     // dd();
+    //     if (isset(auth('sanctum')->user()->email)) {
+    //         $internal_states = internalState::get(['name', 'id']);
+
+    //         return array_merge(parent::share($request), []);
+    //     } else
+    //         return array_merge(parent::share($request), []);
+    // }
     public function share(Request $request): array
     {
+        // dd(Department::get(['id', 'name'])->sortByDesc('id'));
         return array_merge(parent::share($request), [
+            // 'internal_states' => auth('sanctum')->check()
+            //     ? fn() => internalState::get(['id', 'name'])
+            //     : null,
+
             //
+
+            'Departments' => auth('sanctum')->check()
+                ? fn() => Department::get(['id', 'name'])->sortBy('id')->values()
+                : null,
         ]);
     }
 }

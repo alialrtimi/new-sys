@@ -17,7 +17,12 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
     public function register()
     {
         $this->hideSensitiveRequestDetails();
-
+        Telescope::tag(function ($entry) {
+            return [
+                'department_search_key' => 'department_search_key' . ':' . (request()->department_search_key ?? ''),
+                'request_search_key' => 'request_search_key' . ':' . (request()->request_search_key ?? ''),
+            ];
+        });
         Telescope::auth(function ($request) {
             // Use your custom middleware logic
             $middleware = new TelescopeMiddleware();

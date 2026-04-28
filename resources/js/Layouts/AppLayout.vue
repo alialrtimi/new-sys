@@ -367,11 +367,81 @@ const logout = () => {
                                 <Link :href="route('users-index')"
                                     :class="$inertia.page.component == 'Users' ? 'nav-link active' : 'nav-link '"
                                     aria-current="page">
-                                    <svg class="bi me-2" width="16" height="16">
+                                    <svg class="bi me-2 d-inline" width="16" height="16">
                                         <use xlink:href="#home"></use>
                                     </svg>
+                                    <label for="">
+                                        إدارة المستخدمين</label>
+                                </Link>
+                            </li>
 
-                                    إدارة المستخدمين
+
+                            <li class="nav-item">
+                                <Link :href="route('rejected-personal-pictures-index')"
+                                    :class="$inertia.page.component == 'RejectedPersonalPictures' ? 'nav-link active' : 'nav-link '"
+                                    aria-current="page">
+                                    <svg class="bi me-2 d-inline" width="16" height="16">
+                                        <use xlink:href="#home"></use>
+                                    </svg>
+                                    <label for=""> الصور الخاطئة
+                                    </label>
+                                </Link>
+                            </li>
+                            <li class="nav-item">
+                                <Link :href="route('waiting-for-search')"
+                                    :class="$inertia.page.component == 'WaitingForSearch' ? 'nav-link active' : 'nav-link '"
+                                    aria-current="page">
+                                    <svg class="bi me-2 d-inline" width="16" height="16">
+                                        <use xlink:href="#home"></use>
+                                    </svg>
+                                    <label for=""> في انتظار البحث
+                                    </label>
+                                </Link>
+                            </li>
+
+                            <li class="nav-item">
+                                <Link :href="route('booked-for-searchers')"
+                                    :class="$inertia.page.component == 'BookedForSearchers' ? 'nav-link active' : 'nav-link '"
+                                    aria-current="page">
+                                    <svg class="bi me-2 d-inline" width="16" height="16">
+                                        <use xlink:href="#home"></use>
+                                    </svg>
+                                    <label for=""> محجوز للباحثين
+                                    </label>
+                                </Link>
+                            </li>
+
+                            <li class="nav-item">
+                                <Link :href="route('criminal-record-office')"
+                                    :class="$inertia.page.component == 'CriminalRecordOffice' ? 'nav-link active' : 'nav-link '"
+                                    aria-current="page">
+                                    <svg class="bi me-2 d-inline" width="16" height="16">
+                                        <use xlink:href="#home"></use>
+                                    </svg>
+                                    <label for=""> مكتب السوابق
+                                    </label>
+                                </Link>
+                            </li>
+                            <li class="nav-item">
+                                <Link :href="route('waiting-for-approval')"
+                                    :class="$inertia.page.component == 'WaitingForApproval' ? 'nav-link active' : 'nav-link '"
+                                    aria-current="page">
+                                    <svg class="bi me-2 d-inline" width="16" height="16">
+                                        <use xlink:href="#home"></use>
+                                    </svg>
+                                    <label for=""> طلبات محالة الاعتماد
+                                    </label>
+                                </Link>
+                            </li>
+                            <li class="nav-item">
+                                <Link :href="route('ready-requests')"
+                                    :class="$inertia.page.component == 'ReadyRequests' ? 'nav-link active' : 'nav-link '"
+                                    aria-current="page">
+                                    <svg class="bi me-2 d-inline" width="16" height="16">
+                                        <use xlink:href="#home"></use>
+                                    </svg>
+                                    <label for=""> جاهزة للاستلام
+                                    </label>
                                 </Link>
                             </li>
 
@@ -388,6 +458,23 @@ const logout = () => {
 * {
     text-align: right;
 
+}
+
+input::placeholder {
+    color: #d3d4d5 !important;
+    opacity: 0.1;
+}
+
+input {
+    background-color: #2a3038 !important;
+    border: none !important;
+    color: white !important;
+}
+
+select {
+    background-color: #2a3038 !important;
+    border: none !important;
+    color: white !important;
 }
 
 .spinner-icon {
@@ -477,5 +564,18 @@ th {
 
 .nav-item {
     color: #d9d9d9 !important;
+}
+
+.el-pagination .btn-prev .el-icon,
+.el-pagination .btn-next .el-icon {
+    display: none !important;
+}
+
+.el-pagination .btn-prev::after {
+    content: "السابق <";
+}
+
+.el-pagination .btn-next::after {
+    content: "التالي>";
 }
 </style>

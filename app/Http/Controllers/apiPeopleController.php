@@ -16,7 +16,7 @@ use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-class peopleController extends Controller
+class apiPeopleController extends Controller
 {
     public function edit_person(Request $request)
     {
@@ -468,7 +468,7 @@ class peopleController extends Controller
             'notes' => ''
         ]);
     }
-    public function rejected_personal_pictures_index(Request $request)
+    public function api_rejected_personal_pictures_index(Request $request)
     {
         // dd();
 
@@ -531,13 +531,13 @@ class peopleController extends Controller
         } else {
             $rejected_personal_pictures = $rejected_personal_pictures->simplePaginate(10)->appends($request->all());
         }
-        return Inertia::render('RejectedPersonalPictures', [
+        return ['RejectedPersonalPictures', [
             'people' => $rejected_personal_pictures,
             'search' => '',
             'notes' => '',
             // 'count' => $rejected_personal_pictures_count,
             // 'last_page' => $last_page,
-        ]);
+        ]];
         // return inertia('RejectedPersonalPictures', [
         //     'people' => $rejected_personal_pictures,
         //     'search' => '',

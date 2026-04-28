@@ -29,8 +29,8 @@ createInertiaApp({
     },
     progress: {
         color: '#4B5563',
-        showSpinner: true, // Optionally show a spinner
-        delay: 100000, //
+        showSpinner: true, 
+        delay: 100000, 
     },
 });
 router.on('start', () => {
