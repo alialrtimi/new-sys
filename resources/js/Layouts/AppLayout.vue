@@ -9,6 +9,7 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
+
 // import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 defineProps({
     title: String,
@@ -452,9 +453,14 @@ const logout = () => {
                 </div>
             </div>
         </div>
+
     </div>
 </template>
 <style>
+.gray-bg {
+    background-color: #2c3034 !important;
+}
+
 * {
     text-align: right;
 
@@ -577,5 +583,32 @@ th {
 
 .el-pagination .btn-next::after {
     content: "التالي>";
+}
+
+.el-overlay-dialog {
+    background: #afafaf24 !important;
+}
+
+.el-dialog {
+    background: #191c24 !important;
+    box-shadow: 0px 0px 8px #ffffff21;
+    border: solid 0.1px #4a4a4a;
+}
+
+.el-dialog__header {
+    direction: rtl;
+    padding: 0px !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.el-dialog__title {
+    color: white;
+}
+
+.el-dialog__headerbtn {
+
+    position: inherit;
 }
 </style>

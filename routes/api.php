@@ -29,5 +29,10 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    Route::get('reports', [apiPeopleController::class, 'reports'])->name('reports');
+
+    Route::get('api-rejected-personal-pictures-index2', [apiPeopleController::class, 'api_rejected_personal_pictures_index2'])->name('api-rejected-personal-pictures-index2');
+
     Route::get('api-rejected-personal-pictures-index', [apiPeopleController::class, 'api_rejected_personal_pictures_index'])->name('api-rejected-personal-pictures-index');
+    Route::get('report-on-age-group-cases-by-month-and-year', [apiPeopleController::class, 'ReportOnAgeGroupCasesByMonthAndYear'])->name('report-on-age-group-cases-by-month-and-year');
 });

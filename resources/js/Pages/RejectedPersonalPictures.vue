@@ -5,11 +5,218 @@ import { ElPagination, ElDialog, ElMessage, ElMessageBox } from 'element-plus';
 import { ref, watch } from 'vue';
 // const form = $inertia;
 import { useForm } from '@inertiajs/vue3';
+import { el, it } from 'element-plus/es/locale/index.mjs';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 const showDialogVisible = ref(false);
+const showPrintDialogVisible = ref(false);
 const editDialogVisible = ref(false);
 
 const addDialogVisible = ref(false);
+import { faInbox } from '@fortawesome/free-solid-svg-icons'
+import { library } from '@fortawesome/fontawesome-svg-core'
+library.add(faInbox);
 
+const checkAll = ref(false);
+const selectedItems = ref([]);
+
+
+// print cart functions
+
+// توليد بيانات كثيرة للتجربة
+const PrintTemplate = `
+   <html lang="ar">
+   <head>
+     <meta charset="UTF-8">
+     <title>طباعة جدول</title>
+    </head>
+      <style>
+    body {
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      padding: 20px;
+    }
+
+    button {
+      margin-bottom: 20px;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #000;
+      padding: 8px;
+      text-align: center;
+    }
+
+    thead {
+      background: #eee;
+    }
+
+    /* ================= PRINT ================= */
+    @media print {
+
+      button {
+        display: none;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        display: table-header-group; /* تكرار الهيدر */
+      }
+
+      tfoot {
+        display: table-footer-group;
+      }
+
+      tr {
+        page-break-inside: avoid; /* منع تقطيع الصف */
+      }
+
+      td, th {
+        border: 1px solid #000;
+        padding: 8px;
+      }
+
+      @page {
+        margin: 20mm;
+      }
+
+      /* رقم الصفحة */
+      body::after {
+        content: "صفحة " counter(page);
+        position: fixed;
+        bottom: 10px;
+        left: 20px;
+        font-size: 30px;
+      }
+    }
+  </style>
+  
+  `;
+const tbody = document.getElementById("printTableBody");
+
+function printTable() {
+
+    const table = document.querySelector("table");
+
+    if (!table) return;
+
+    const printStyles = `
+        body {
+            font-family: Arial;
+            direction: rtl;
+            padding: 10px;
+            color: #000;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            display: table-header-group;
+            background: #bca295;
+            color: #000;
+        }
+        
+        th, td {
+            border: 1px solid #999;
+            padding: 8px;
+
+            text-align: center;
+            font-size: 18px;
+            color: #000;
+        }
+        td{
+        padding-top: 20px;
+        padding-bottom: 20px;
+        }
+        p {
+            margin: 0;
+            padding: 0;
+        }
+        tbody tr:nth-child(odd) {
+            background: #ffffff;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #eeeeee;
+        }
+
+        tr {
+            page-break-inside: avoid;
+        }
+
+        @page {
+            margin: 8px;
+        }
+
+        body::after {
+            content: "صفحة " counter(page);
+            position: fixed;
+            bottom: 10px;
+            left: 20px;
+            font-size: 12px;
+            color: #555;
+        }
+    `;
+
+    const iframe = document.createElement("iframe");
+
+    iframe.style.position = "fixed";
+    iframe.style.right = "0";
+    iframe.style.bottom = "0";
+    iframe.style.width = "0";
+    iframe.style.height = "0";
+    iframe.style.border = "0";
+
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow.document;
+
+    doc.open();
+    doc.write(`
+        <html lang="ar">
+        <head>
+            <meta charset="UTF-8">
+            <title>طباعة الجدول</title>
+            <style>${printStyles}</style>
+        </head>
+        <body>
+            ${table.outerHTML}
+        </body>
+        </html>
+    `);
+    doc.close();
+
+    iframe.onload = function () {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+
+        setTimeout(() => {
+            document.body.removeChild(iframe);
+        }, 1000);
+    };
+}
+
+
+// print cart functions
+
+function selectAll(value) {
+    props.people.data.forEach(item => {
+        item.checked = value;
+    });
+}
 // Retrieve data from Inertia props
 const props = defineProps({
     people: Object,
@@ -19,8 +226,14 @@ const props = defineProps({
     count: Number,
     last_page: Number,
 });
+props.people.data.forEach(item => {
+    // push new property to each item to track checkbox state
+    item.checked = false;
+});
 
-const ShownDate = "";
+
+
+const DialogData = "";
 // const Editendata = "";
 
 
@@ -39,6 +252,23 @@ const newItemForm = new useForm({
 
 });
 
+
+
+function addToPrintCart(item) {
+    // looping through the people data to find checked items
+    props.people.data.forEach(item => {
+        if (item.checked && !selectedItems.value.includes(item)) {
+            selectedItems.value.push(item);
+        }
+    });
+}
+
+function deletePrintCart() {
+    selectedItems.value = [];
+    props.people.data.forEach(item => {
+        item.checked = false;
+    });
+}
 function getTextColor(color) {
     // حساب التباين البسيط بناءً على اللون
     if (!color) return '#000000'; // نص أسود إذا لم يكن هناك لون
@@ -66,13 +296,17 @@ function hexToRgb(hex) {
 
 function showDialogVisibleFunction(item) {
 
-    ShownDate = item;
+    DialogData = item;
 }
 function editDialogVisibleFunction(item) {
 
     // Editendata = item;
 }
-
+function openPersonDialog(item) {
+    // this.$inertia.visit(`/person-data/${item.libyan_person_id}`);
+    showDialogVisible = true;
+    DialogData = item;
+}
 function goToUrl(url) {
     this.$inertia.visit(url)
 }
@@ -208,6 +442,8 @@ const form = new useForm({
 });
 // Handle pagination
 const handlePageChange = (page) => {
+
+    checkAll.value = false;
     form.page = page;
 
     form.request_search_key = searchForm.request_search_key;
@@ -217,7 +453,14 @@ const handlePageChange = (page) => {
     form.get('/rejected-personal-pictures-index', {
         preserveState: true, // Optional: Keeps form state
         replace: true,  // Optional: Replace history state instead of pushing
-    });
+        onSuccess: () => {
+            props.people.data.forEach(item => {
+                item.checked = false; // Add a checked property to each item
+            });
+        },
+    },
+
+    );
 };
 
 
@@ -273,268 +516,142 @@ const handlePageChange = (page) => {
                     + ملف جديد
                 </button>
             </div> -->
-            <el-dialog :close-on-click-modal="false" v-model="addDialogVisible" title="نمودج ملف جديد" width="800">
-                <div class="col-12 row d-flex flex-wrap">
-                    <div class="col-6 column py-2">
-                        <label> نوع الملاحظه</label>
+            <el-dialog v-model="showPrintDialogVisible" title="سلة الطباعة" width="85%">
+                <button class="btn btn-primary mb-2" @click="printTable()">طباعة</button>
+                <div class="col-12 row">
+                    <table style="font-size: 0.5rem !important;" id="printTableBody">
+                        <thead>
+                            <tr>
+                                <th>
 
-                        <select v-model="newItemForm.note_id" class="form-control " placeholder="  نوع الملاحظه...">
-                            <option v-for="item in notes" :value="item.id">{{ item.name }}</option>
-                        </select>
-                        <label class="text-danger" v-if="errors.note_id">{{ errors.note_id
-                        }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>رقم الملف الجزئي</label>
-                        <input v-model="newItemForm.partial_case_number" class="form-control "
-                            placeholder="رقم الملف الجزئي..." />
-                        <label class="text-danger" v-if="errors.partial_case_number">{{ errors.partial_case_number
-                        }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>رقم الملف الجنائي</label>
-                        <input v-model="newItemForm.criminal_case_number" class="form-control "
-                            placeholder="رقم القضية..." />
-                        <label class="text-danger" v-if="errors.criminal_case_number">{{ errors.criminal_case_number
-                        }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>الإسم</label>
-                        <input v-model="newItemForm.name" class="form-control " placeholder="الإسم..." />
-                        <label class="text-danger" v-if="errors.name">{{ errors.name }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>إسم الأم</label>
-                        <input v-model="newItemForm.mother_name" class="form-control " placeholder="اسم الأم..." />
-                        <label class="text-danger" v-if="errors.mother_name">{{ errors.mother_name }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>تاريخ الميلاد</label>
-                        <input v-model="newItemForm.date_of_birth" class="form-control "
-                            placeholder="تاريخ الميلاد..." />
-                        <label class="text-danger" v-if="errors.date_of_birth">{{ errors.date_of_birth }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>المهنة</label>
-                        <input v-model="newItemForm.request_search_key" class="form-control " placeholder="المهنة..." />
-                        <label class="text-danger" v-if="errors.request_search_key">{{ errors.request_search_key
-                        }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>العنوان</label>
-                        <input v-model="newItemForm.department_search_key" class="form-control "
-                            placeholder="العنوان..." />
-                        <label class="text-danger" v-if="errors.department_search_key">{{ errors.department_search_key
-                        }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>التهم</label>
-                        <input v-model="newItemForm.charges" class="form-control " placeholder="التهم..." />
-                        <label class="text-danger" v-if="errors.charges">{{ errors.charges }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>تاريخ القضية</label>
-                        <input v-model="newItemForm.judgment_date" class="form-control "
-                            placeholder="تاريخ القضية..." />
-                        <label class="text-danger" v-if="errors.judgment_date">{{ errors.judgment_date }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>منطوق الحكم</label>
-                        <input v-model="newItemForm.judgment_operative" class="form-control "
-                            placeholder="منطوق الحكم..." />
-                        <label class="text-danger" v-if="errors.judgment_operative">{{ errors.judgment_operative
-                        }}</label>
-                    </div>
+                                    #
+                                </th>
+                                <th class="print_header_column">تاريخ الطلب </th>
+                                <th class="print_header_column">الاسم الكامل</th>
+                                <th class="print_header_column">اللقب</th>
+                                <th class="print_header_column">إسم الأم بالكامل</th>
+                                <th class="print_header_column">الرقم الوطني</th>
+                                <th class="print_header_column"> اثبات الهوية</th>
+                                <th class="print_header_column"> ملاحظات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in selectedItems" :key="item.id">
+                                <td>
+                                    {{ selectedItems.indexOf(item) + 1 }}
+                                </td>
+                                <td>
+                                    <!-- Y-m-d -->
+                                    <label style="display: block;">
+                                        {{ new Date(item.l_req_date).toLocaleDateString('sv-SE') }}
 
 
-                    <div class="col-12 column py-2">
-                        <label> ملاحظات</label>
-                        <input v-model="newItemForm.note" class="form-control " placeholder=" ملاحظات..." />
-                        <label class="text-danger" v-if="errors.note">{{ errors.note
-                        }}</label>
-                    </div>
+                                    </label>
+
+                                    <label>( {{ item.id }} )</label>
+                                </td>
+                                <td class="print_header_column">{{ item.libyan_person.full_name }}</td>
+                                <td class="print_header_column">{{ item.libyan_person.last_name }}</td>
+                                <td class="print_header_column">{{ item.libyan_person.mother_full_name }}</td>
+
+                                <td class="print_header_column">{{ item.libyan_person.ssn }}</td>
+                                <td class="print_header_column">
+                                    <p class="m-0 p-0">
+                                        {{ item.libyan_person?.doc_type == 1 ? ' (ب / ش) ' :
+                                            item.libyan_person?.doc_type == 2
+                                                ? ' (ج/ س)' : '' }}
+                                        -
+
+                                        {{ item.libyan_person.document_issued_place?.name || '' }}
+
+                                    </p>
+
+
+                                    <p class="m-0 p-0">
+                                        {{ item.libyan_person.passport_no }}
+                                    </p>
+
+                                </td>
+                                <td class="m-0 p-0 " style="width: 15%;">
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <template #footer>
-                    <div class="dialog-footer d-flex justify-content-between">
-                        <button id="addDialogVisibleButton" @click="addDialogVisible = false">الغاء</button>
-                        <button @click="addPerson" class="btn btn-success">حفظ</button>
 
-                    </div>
-                </template>
             </el-dialog>
-            <el-dialog :close-on-click-modal="false" v-model="editDialogVisible" title="نمودج تعديل ملف " width="800">
-                <div class="col-12 row d-flex flex-wrap">
-                    <div class="col-6 column py-2">
-                        <label> نوع الملاحظة</label>
-                        <select v-model="editItemForm.note_id" class="form-control ">
-                            <option v-for="item in notes" :value="item.id">{{ item.name }}</option>
-                        </select>
-                        <label class="text-danger" v-if="errors.note_id">{{ errors.note_id
-                        }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>رقم الملف الجزئي</label>
-                        <input v-model="editItemForm.partial_case_number" class="form-control " />
-                        <label class="text-danger" v-if="errors.partial_case_number">{{ errors.partial_case_number
-                        }}</label>
-                    </div>
+            <el-dialog v-model="showDialogVisible" :close-on-click-modal="false" :close-on-press-escape="false"
+                title=" بيانات الطلب " width="800" :class="'text-white'">
 
+                <div class=" col-12 row d-flex flex-wrap">
+                    <div class="col-3 d-flex justify-content-center">
+                        <img class=" p-1 " style=" height: 200px;width: 200px;border-radius: unset "
+                            :src="DialogData.libyan_person?.personal_picture" alt=" image">
+                    </div>
+                    <div class="col-9 row d-flex flex-wrap ">
+                        <div class="col-6 pt-2">
+                            <strong>الاسم الكامل:</strong>
+                            <p class="gray-bg p-1 rounded">
+                                {{ DialogData.libyan_person?.full_name }}</p>
+                        </div>
+                        <div class="col-6 pt-2">
+                            <strong>اللقب:</strong>
+                            <p class="gray-bg p-1 rounded">
+                                {{ DialogData.libyan_person?.last_name }}</p>
 
-                    <div class="col-6 column py-2">
-                        <label>رقم الملف الجنائي</label>
-                        <input v-model="editItemForm.criminal_case_number" class="form-control " />
-                        <label class="text-danger" v-if="errors.criminal_case_number">{{ errors.criminal_case_number
-                        }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>الإسم</label>
-                        <input v-model="editItemForm.name" class="form-control " />
-                        <label class="text-danger" v-if="errors.name">{{ errors.name }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>إسم الأم</label>
-                        <input v-model="editItemForm.mother_name" class="form-control " />
-                        <label class="text-danger" v-if="errors.mother_name">{{ errors.mother_name }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>تاريخ الميلاد</label>
-                        <input v-model="editItemForm.date_of_birth" class="form-control " />
-                        <label class="text-danger" v-if="errors.date_of_birth">{{ errors.date_of_birth }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>المهنة</label>
-                        <input v-model="editItemForm.request_search_key" class="form-control " />
-                        <label class="text-danger" v-if="errors.request_search_key">{{ errors.request_search_key
-                        }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>العنوان</label>
-                        <input v-model="editItemForm.department_search_key" class="form-control " />
-                        <label class="text-danger" v-if="errors.department_search_key">{{ errors.department_search_key
-                        }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>التهم</label>
-                        <input v-model="editItemForm.charges" class="form-control " />
-                        <label class="text-danger" v-if="errors.charges">{{ errors.charges }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>تاريخ القضية</label>
-                        <input v-model="editItemForm.judgment_date" class="form-control " />
-                        <label class="text-danger" v-if="errors.judgment_date">{{ errors.judgment_date }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>منطوق الحكم</label>
-                        <input v-model="editItemForm.judgment_operative" class="form-control " />
-                        <label class="text-danger" v-if="errors.judgment_operative">{{ errors.judgment_operative
-                        }}</label>
-                    </div>
-                    <div class="col-12 column py-2">
-                        <label> ملاحظلات</label>
-                        <input v-model="editItemForm.note" class="form-control " />
-                        <label class="text-danger" v-if="errors.note">{{ errors.note
-                        }}</label>
-                    </div>
+                        </div>
+                        <div class="col-6 pt-2">
+                            <strong>إسم الأم بالكامل:</strong>
+                            <p class="gray-bg p-1 rounded">
+                                {{ DialogData.libyan_person?.mother_full_name }}</p>
+                        </div>
+                        <div class="col-6 pt-2">
+                            <strong>مكان وتاريخ الميلاد:</strong>
+                            <p class="gray-bg p-1 rounded">
+                                {{ DialogData.libyan_person?.place_of_b }} - {{ DialogData.libyan_person?.date_of_b
+                                    ? DialogData.libyan_person.date_of_b : '' }}</p>
+                        </div>
+                        <div class=" col-6 pt-2">
+                            <strong>المهنة:</strong>
+                            <p class="gray-bg p-1 rounded">
+                                {{ DialogData.libyan_person?.job }}</p>
+                        </div>
+                        <div class="col-6 pt-2">
+                            <strong>العنوان:</strong>
+                            <p class="gray-bg p-1 rounded">
+                                {{ DialogData.libyan_person?.address.name }}</p>
+                        </div>
+                        <div class="col-6 pt-2">
+                            <strong>الرقم الوطني:</strong>
+                            <p class="gray-bg p-1 rounded">
+                                {{ DialogData.libyan_person?.ssn }}</p>
+                        </div>
+                        <div class="col-6 pt-2">
+                            <strong>نوع اثبات الهوية:</strong>
+                            <p class="gray-bg p-1 rounded">
+                                {{ DialogData.libyan_person?.doc_type == 1 ? 'بطاقة شخصية' :
+                                    DialogData.libyan_person?.doc_type == 2
+                                        ? 'جواز سفر' : '' }}</p>
+                        </div>
 
+                        <div class="col-6 pt-2">
+                            <strong>مكان إصدار الهوية:</strong>
+                            <p class="gray-bg p-1 rounded">
+                                {{ DialogData.libyan_person?.document_issued_place?.name || '' }}</p>
+                        </div>
 
-                </div>
-                <template #footer>
-                    <div class="dialog-footer d-flex justify-content-between">
-                        <button id='editDialogVisibleButton' @click="
-                            editDialogVisible = false;
+                        <div class="col-6 pt-2">
+                            <strong>الجنس:</strong>
+                            <p class="gray-bg p-1 rounded">
+                                {{ DialogData.libyan_person?.sex == 1 ? 'ذكر' :
+                                    'أنثى' }}</p>
+                        </div>
 
-                        ">الغاء</button><button class="btn btn-primary" @click="
-                            //editDialogVisible = false;
-                            editPerson();
-                        ">تعديل</button>
-
-                    </div>
-                </template>
-            </el-dialog>
-
-            <el-dialog v-model="showDialogVisible" title=" # " width="800">
-                <div class="col-12 row d-flex flex-wrap">
-
-                    <div class="col-6 column py-2">
-                        <label>نوع الملاحظة</label>
-                        <input :style="{ backgroundColor: ShownDate.person_note?.color_code }" disabled
-                            class="form-control" />
-                        <label class="text-danger" v-if="errors.note_id">{{ errors.note_id }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>رقم الملف الجزئي</label>
-                        <input disabled v-model="ShownDate.partial_case_number" class="form-control " />
-                        <label class="text-danger" v-if="errors.partial_case_number">{{ errors.partial_case_number
-                        }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>رقم الملف الجنائي</label>
-                        <input disabled v-model="ShownDate.criminal_case_number" class="form-control " />
-                        <label class="text-danger" v-if="errors.criminal_case_number">{{ errors.criminal_case_number
-                        }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>الإسم</label>
-                        <input disabled v-model="ShownDate.name" class="form-control " />
-                        <label class="text-danger" v-if="errors.name">{{ errors.name }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>إسم الأم</label>
-                        <input disabled v-model="ShownDate.mother_name" class="form-control " />
-                        <label class="text-danger" v-if="errors.mother_name">{{ errors.mother_name }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>تاريخ الميلاد</label>
-                        <input disabled v-model="ShownDate.date_of_birth" class="form-control " />
-                        <label class="text-danger" v-if="errors.date_of_birth">{{ errors.date_of_birth }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>المهنة</label>
-                        <input disabled v-model="ShownDate.request_search_key" class="form-control " />
-                        <label class="text-danger" v-if="errors.request_search_key">{{ errors.request_search_key
-                        }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>العنوان</label>
-                        <input disabled v-model="ShownDate.department_search_key" class="form-control " />
-                        <label class="text-danger" v-if="errors.department_search_key">{{ errors.department_search_key
-                        }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>التهم</label>
-                        <input disabled v-model="ShownDate.charges" class="form-control " />
-                        <label class="text-danger" v-if="errors.charges">{{ errors.charges }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>تاريخ القضية</label>
-                        <input disabled v-model="ShownDate.judgment_date" class="form-control " />
-                        <label class="text-danger" v-if="errors.judgment_date">{{ errors.judgment_date }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>منطوق الحكم</label>
-                        <input disabled v-model="ShownDate.judgment_operative" class="form-control " />
-                        <label class="text-danger" v-if="errors.judgment_operative">{{ errors.judgment_operative
-                        }}</label>
-                    </div>
-                    <div class="col-6 column py-2">
-                        <label>طريقة الإدخال</label>
-                        <input disabled v-model="ShownDate.inserted_way" class="form-control " />
-                        <label class="text-danger" v-if="errors.inserted_way">{{ errors.inserted_way
-                        }}</label>
-                    </div>
-
-                    <div class="col-6 column py-2">
-                        <label> المدخل </label>
-                        <input disabled v-model="ShownDate.user.name" class="form-control " />
-
-                    </div>
-                    <div class="col-12 column py-2">
-                        <label> ملاحظات</label>
-                        <input disabled v-model="ShownDate.note" class="form-control " />
-                        <label class="text-danger" v-if="errors.note">{{ errors.note
-                        }}</label>
                     </div>
                 </div>
+
+
                 <template #footer>
                     <div class="dialog-footer d-flex justify-content-between">
                         <button @click="showDialogVisible = false">الغاء</button>
@@ -546,7 +663,8 @@ const handlePageChange = (page) => {
 
 
 
-                <div class="m-0 d-flex col-12">
+                <div class="m-0 d-flex col-12 d-flex justify-content-between
+                ">
                     <div class="col-2 d-flex justify-content-start">
                         <button class="btn btn-primary btn-sm" :disabled="!people.prev_page_url"
                             @click="handlePageChange(1)">
@@ -556,7 +674,21 @@ const handlePageChange = (page) => {
                             :total="people.current_page + (people.next_page_url ? 1 : people.current_page)"
                             @current-change="handlePageChange" />
                     </div>
+                    <div class="col-3 d-flex justify-content-center">
+                        <button class="btn btn-sm  btn-outline-danger" @click="deletePrintCart()">
+                            <FontAwesomeIcon :icon="'trash'" class="danger-icon p-0 m-0" />
 
+
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary" @click="showPrintDialogVisible = true">
+                            طباعه السلة
+                            <FontAwesomeIcon :icon="'inbox'" class=" p-0 m-0" />
+
+                        </button>
+                        <button class="btn btn-sm btn-outline-success" @click="addToPrintCart()">
+                            +
+                        </button>
+                    </div>
 
 
 
@@ -566,10 +698,15 @@ const handlePageChange = (page) => {
 
                 <div>
                     <div style="max-height: 600px; overflow: auto;">
+
                         <table class="table table-dark table-striped text-nowrap">
                             <thead>
                                 <tr>
-                                    <th>الصورة الشخصية</th>
+                                    <th>
+                                        <el-checkbox v-model="checkAll" @change="selectAll(checkAll)"></el-checkbox>
+                                    </th>
+                                    <th>الصورة </th>
+                                    <th>تاريخ الطلب</th>
                                     <th>الاسم الكامل</th>
                                     <th>اللقب</th>
                                     <th>إسم الأم بالكامل</th>
@@ -584,11 +721,26 @@ const handlePageChange = (page) => {
                             </thead>
                             <tbody>
                                 <tr v-for="item in people.data" :key="item.id">
-                                    <td> <button class="btn btn-primary" @click="showDetails(item)">
-                                            <img class=" p-1 " style="height: 80px;width: 80px;border-radius: unset "
-                                                src="" alt="image">
+                                    <td>
+                                        <!-- <input type="checkbox" v-model="item.checked" @change="checkItem(item)"> -->
+                                        <el-checkbox v-model="item.checked"></el-checkbox>
+                                    </td>
+                                    <td> <button class="btn btn-primary p-0"
+                                            @click="showDialogVisible = true; DialogData = item">
+                                            <img class=" p-1 " style=" height: 75px;width: 75px;border-radius: unset "
+                                                src="" alt=" image">
                                         </button>
-                                        {{ item.id }}
+
+                                    </td>
+                                    <td>
+                                        <!-- Y-m-d -->
+                                        <label style="display: block;">
+                                            {{ new Date(item.l_req_date).toLocaleDateString('sv-SE') }}
+
+
+                                        </label>
+
+                                        <label>( {{ item.id }} )</label>
                                     </td>
                                     <td>{{ item.libyan_person?.full_name }}</td>
                                     <td>{{ item.libyan_person?.last_name }}</td>
@@ -603,94 +755,14 @@ const handlePageChange = (page) => {
                                         item.libyan_person?.doc_type == 2
                                             ? 'جواز سفر' : '' }}</td>
                                     <td>{{ item.libyan_person?.document_issued_place?.name || '' }}</td>
-                                    <td v-if="item.libyan_person.sex ? 1 : 0">{{ item.libyan_person.sex == 1 ? 'ذكر' :
+                                    <td v-if="item.libyan_person.sex ? 1 : 0">{{ item.libyan_person.sex == 1 ? 'ذكر'
+                                        :
                                         'أنثى' }}
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <!-- <el-table :data="people.data" border stripe class="dark-table" height="400"
-                        style="min-width: 1000px;">
-                        >
-
-                        <el-table-column prop="id" label="الصورة الشخصية" />
-
-                        <el-table-column prop="libyan_person.full_name" :width="fit" label="الاسم الكامل" />
-                        <el-table-column prop="libyan_person.last_name" label="اللقب" />
-                        <el-table-column prop="libyan_person.mother_full_name" label="إسم الأم بالكامل" />
-
-                        <el-table-column label="مكان وتاريخ الميلاد">
-                            <template #default="scope">
-                                {{ scope.row.libyan_person.place_of_b }} - {{ function () {
-                                    if (scope.row.libyan_person.date_of_b) {
-                                        const date = new Date(scope.row.libyan_person.date_of_b);
-                                        return date.getFullYear(); // Adjust the locale as needed
-                                    }
-                                    return '';
-                                }() }}
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="libyan_person.job" label="المهنة" />
-                        <el-table-column prop="libyan_person.job" label="العنوان" />
-                        <el-table-column prop="libyan_person.ssn" label="الرقم الوطني" />
-                        <el-table-column label="نوع اثبات الهوية">
-                            <template #default="scope">
-                                {{ scope.row.libyan_person?.doc_type == 1 ? 'بطاقة شخصية' :
-                                    scope.row.libyan_person?.doc_type == 2 ? 'جواز سفر' : ''
-                                }}
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="مكان إصدار الهوية">
-                            <template #default="scope">
-                                {{ scope.row.libyan_person.document_issued_place?.name || ''
-                                }}
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="الجنس">
-                            <template #default="scope">
-                                {{ scope.row.libyan_person?.doc_type == 1 ? ' ذكر' :
-                                    scope.row.libyan_person?.doc_type == 2 ? ' أنثى' : ''
-                                }}
-                            </template>
-                        </el-table-column>
-
-
-
-
-                    </el-table> -->
-                    <!-- <el-table-column prop="judgment_date" label="#">
-                            <template #default="scope">
-
-                                <button class="btn btn-sm btn-primary "
-                                    @click="showDialogVisible = true; ShownDate = scope.row">
-                                    عرض الملف
-                                </button>
-                                <button class="btn btn-sm btn-primary " @click="editDialogVisible = true; Editendata = scope.row;
-                                editItemForm.id = scope.row.id;
-                                editItemForm.partial_case_number = scope.row.partial_case_number;
-                                editItemForm.note_id = scope.row.note_id;
-
-                                editItemForm.criminal_case_number = scope.row.criminal_case_number;
-                                editItemForm.name = scope.row.name;
-                                editItemForm.mother_name = scope.row.mother_name;
-                                editItemForm.date_of_birth = scope.row.date_of_birth;
-                                editItemForm.request_search_key = scope.row.request_search_key;
-                                editItemForm.department_search_key = scope.row.department_search_key;
-                                editItemForm.charges = scope.row.charges;
-                                editItemForm.judgment_date = scope.row.judgment_date;
-                                editItemForm.judgment_operative = scope.row.judgment_operative;
-                                editItemForm.note = scope.row.note;
-                                ">
-                                    تعديل
-                                </button>
-                                <button v-if="$inertia.page.props.auth.user.type != 'user'"
-                                    class="btn btn-sm btn-danger" @click="deltePerson(scope.row.id)">
-                                    حدف
-                                </button>
-
-                            </template>
-                        </el-table-column> -->
 
                 </div>
             </div>
@@ -757,11 +829,18 @@ table {
 td,
 th {
     white-space: nowrap;
-    font-size: 1.6rem !important;
+    font-size: 1.1rem !important;
+    font-weight: bold;
+    padding-left: 0px !important;
 }
 
 td,
 th {
     vertical-align: middle;
+}
+
+.print_header_column {
+    font-size: 0.85rem !important;
+    height: 10px;
 }
 </style>

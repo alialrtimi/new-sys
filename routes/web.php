@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 // use Inertia\Inertia;
 
 use App\Http\Controllers\NoteController;
+use App\Http\Controllers\ReportsController;
 
 Route::get('/test', function () {
     return 'ok';
@@ -23,8 +24,14 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', [peopleController::class, 'index'])->name('dashboard');
 
+    Route::get('/fast', function () {
+        return 'ok';
+    });
+
+    Route::get('reports', [ReportsController::class, 'index'])->name('reports');
 
     Route::get('/rejected-personal-pictures-index', [peopleController::class, 'rejected_personal_pictures_index'])->name('rejected-personal-pictures-index');
+
     Route::get('/waiting-for-search', [peopleController::class, 'waiting_for_search'])->name('waiting-for-search');
     Route::get('/booked-for-searchers', [peopleController::class, 'booked_for_searchers'])->name('booked-for-searchers');
 

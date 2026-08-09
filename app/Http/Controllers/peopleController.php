@@ -8,6 +8,7 @@ use App\Models\LibyanPersonRequest;
 use App\Models\Note;
 use App\Models\Person;
 use App\Models\SearchLog;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +19,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class peopleController extends Controller
 {
+
+
     public function edit_person(Request $request)
     {
         // dd($request->all());
@@ -470,12 +473,10 @@ class peopleController extends Controller
     }
     public function rejected_personal_pictures_index(Request $request)
     {
-        // dd();
-
-        // return response()->json(['ok' => true]);
 
 
-        // dd(strlen($request->request_search_key));
+
+
         $search = trim($request->request_search_key);
 
 
@@ -488,7 +489,8 @@ class peopleController extends Controller
                 'id',
                 'libyan_person_id',
                 'department_id',
-                'internal_state_id'
+                'internal_state_id',
+                'l_req_date'
             ])
 
             ->where('internal_state_id', 0)
@@ -522,10 +524,11 @@ class peopleController extends Controller
                 'department:id,name',
             ]);
 
+        //  get the count of the results without pagination for calculating last page
+        // $count = $rejected_personal_pictures->count('id');
+        // $last_page = ceil($count / 10);
 
 
-        // $rejected_personal_pictures_count = $rejected_personal_pictures->count('id');
-        // $last_page = ceil($rejected_personal_pictures_count / 10);
         if ($request->request_search_key != '') {
             $rejected_personal_pictures = $rejected_personal_pictures->simplePaginate(1)->appends($request->all());
         } else {
@@ -535,7 +538,7 @@ class peopleController extends Controller
             'people' => $rejected_personal_pictures,
             'search' => '',
             'notes' => '',
-            // 'count' => $rejected_personal_pictures_count,
+            // 'count' => $count,
             // 'last_page' => $last_page,
         ]);
         // return inertia('RejectedPersonalPictures', [

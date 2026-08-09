@@ -44,14 +44,14 @@ const submit = () => {
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="البريد الاكتروني" value="البريد الاكتروني" />
+                <InputLabel id="email-label" for="اسم المستخدم" value="اسم المستخدم" />
                 <TextInput id="email" v-model="form.email" type="text" class="mt-1 block w-full" required autofocus
                     autocomplete="username" />
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
             <div class="mt-4">
-                <InputLabel for="كلمة المرور" value="كلمة المرور" />
+                <InputLabel id="password-label" for="كلمة المرور" value="كلمة المرور" />
                 <TextInput id="password" v-model="form.password" type="password" class="mt-1 block w-full" required
                     autocomplete="current-password" />
                 <InputError class="mt-2" :message="form.errors.password" />
@@ -64,16 +64,44 @@ const submit = () => {
                 </label>
             </div> -->
 
-            <div class="flex items-center justify-end mt-4">
-                <Link v-if="canResetPassword" :href="route('password.request')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    هل نسيت كلمة المرور
-                </Link>
+            <div class="flex items-center justify-end mt-4 flex-column">
 
-                <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+
+                <PrimaryButton
+                    class="ms-4 w-full text-center d-flex align-items-center justify-content-center bnt-primary bg-primary m-0"
+                    :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     تسحيل الدخول
                 </PrimaryButton>
+
+
+                <Link v-if="canResetPassword" :href="route('password.request')"
+                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mt-4">
+                    هل نسيت كلمة المرور
+                </Link>
             </div>
         </form>
     </AuthenticationCard>
 </template>
+<style>
+#auth-card {
+    background-color: #191c24 !important;
+}
+
+#email-label,
+#password-label {
+    color: #ffffff !important;
+}
+
+#email,
+#password {
+    border: none !important;
+    background-color: #404247 !important;
+    color: #ffffff !important;
+    text-align: center !important;
+
+}
+
+#auth-div {
+    background-color: #e0e0e0 !important;
+}
+</style>
